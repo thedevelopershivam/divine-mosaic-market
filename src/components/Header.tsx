@@ -5,14 +5,13 @@ import { Input } from '@/components/ui/input'
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [currency, setCurrency] = useState('INR')
 
   const navItems = [
-    { name: 'Crystals', href: '/crystals' },
-    { name: 'Meditation', href: '/meditation' },
-    { name: 'Spiritual Tools', href: '/tools' },
-    { name: 'Aromatherapy', href: '/aromatherapy' },
-    { name: 'Books', href: '/books' },
-    { name: 'Blog', href: '/blog' }
+    { name: 'Home', href: '/' },
+    { name: 'Categories', href: '/categories' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
   ]
 
   return (
@@ -65,10 +64,24 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             {/* Currency Toggle */}
             <div className="hidden md:flex items-center space-x-2 text-sm">
-              <button className="px-2 py-1 rounded bg-spiritual-gold text-primary font-medium">
+              <button 
+                onClick={() => setCurrency('INR')}
+                className={`px-2 py-1 rounded font-medium transition-colors ${
+                  currency === 'INR' 
+                    ? 'bg-spiritual-gold text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
                 ₹ INR
               </button>
-              <button className="px-2 py-1 rounded text-muted-foreground hover:text-foreground">
+              <button 
+                onClick={() => setCurrency('USD')}
+                className={`px-2 py-1 rounded font-medium transition-colors ${
+                  currency === 'USD' 
+                    ? 'bg-spiritual-gold text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
                 $ USD
               </button>
             </div>
@@ -126,10 +139,24 @@ const Header = () => {
                 </a>
               ))}
               <div className="flex items-center space-x-4 pt-4 border-t border-border">
-                <button className="px-3 py-2 rounded bg-spiritual-gold text-primary font-medium text-sm">
+                <button 
+                  onClick={() => setCurrency('INR')}
+                  className={`px-3 py-2 rounded font-medium text-sm transition-colors ${
+                    currency === 'INR' 
+                      ? 'bg-spiritual-gold text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
                   ₹ INR
                 </button>
-                <button className="px-3 py-2 rounded text-muted-foreground hover:text-foreground text-sm">
+                <button 
+                  onClick={() => setCurrency('USD')}
+                  className={`px-3 py-2 rounded font-medium text-sm transition-colors ${
+                    currency === 'USD' 
+                      ? 'bg-spiritual-gold text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
                   $ USD
                 </button>
               </div>
