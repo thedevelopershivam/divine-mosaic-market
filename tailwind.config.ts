@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -61,7 +62,27 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Spiritual theme colors
+				'spiritual-purple': 'hsl(var(--spiritual-purple))',
+				'spiritual-gold': 'hsl(var(--spiritual-gold))',
+				'spiritual-teal': 'hsl(var(--spiritual-teal))',
+				'earth-brown': 'hsl(var(--earth-brown))',
+				'sage-green': 'hsl(var(--sage-green))'
+			},
+			backgroundImage: {
+				'gradient-spiritual': 'var(--gradient-spiritual)',
+				'gradient-warm': 'var(--gradient-warm)',
+				'gradient-hero': 'var(--gradient-hero)'
+			},
+			boxShadow: {
+				'spiritual': 'var(--shadow-spiritual)',
+				'gold': 'var(--shadow-gold)',
+				'card': 'var(--shadow-card)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'slow': 'var(--transition-slow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
