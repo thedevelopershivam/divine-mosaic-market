@@ -129,7 +129,7 @@ const CategoriesSection = () => {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="group relative bg-card rounded-xl overflow-hidden hover:shadow-card transition-all duration-300 hover:-translate-y-2 cursor-pointer min-w-[280px] flex-shrink-0"
+                className="group relative bg-card rounded-xl overflow-hidden hover:shadow-card transition-all duration-300 hover:-translate-y-2 cursor-pointer min-w-[140px] sm:min-w-[200px] md:min-w-[280px] flex-shrink-0"
               >
                 {/* Category Image */}
                 <div className="relative h-48 overflow-hidden">
