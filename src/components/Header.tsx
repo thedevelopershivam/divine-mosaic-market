@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Search, ShoppingCart, Heart, User, Menu, X, Home, BookOpen, Phone } from 'lucide-react'
+import { Search, ShoppingCart, Heart, User, Menu, X, Home, BookOpen, Phone, Grid3X3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -16,8 +17,9 @@ const Header = () => {
   ]
 
   return (
+    <>
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-full overflow-x-hidden">
         {/* Top bar with announcement */}
         <div className="hidden md:block py-2 text-center text-sm bg-gradient-spiritual text-white">
           ✨ Free shipping on orders over $75 • Use code SPIRITUAL20 for 20% off ✨
@@ -158,48 +160,58 @@ const Header = () => {
           </div>
         )}
 
-        {/* Mobile App-Style Footer Navigation (visible on mobile only) */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border lg:hidden z-50">
-          <div className="flex items-center justify-around py-2">
-            <a 
-              href="/" 
-              className="flex flex-col items-center py-2 px-3 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Home className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">Home</span>
-            </a>
-            <a 
-              href="/categories" 
-              className="flex flex-col items-center py-2 px-3 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Menu className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">Categories</span>
-            </a>
-            <a 
-              href="/products" 
-              className="flex flex-col items-center py-2 px-3 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <ShoppingCart className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">Products</span>
-            </a>
-            <a 
-              href="/about" 
-              className="flex flex-col items-center py-2 px-3 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <BookOpen className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">About</span>
-            </a>
-            <a 
-              href="/contact" 
-              className="flex flex-col items-center py-2 px-3 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Phone className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">Contact</span>
-            </a>
-          </div>
-        </div>
       </div>
     </header>
+
+    {/* Enhanced Mobile Footer Navigation */}
+    <div className="fixed bottom-0 left-0 right-0 bg-background/98 backdrop-blur-md border-t border-border md:hidden z-50 shadow-spiritual">
+      <div className="grid grid-cols-5 items-center h-16">
+        <Link 
+          to="/" 
+          className="flex flex-col items-center justify-center h-full text-muted-foreground hover:text-primary transition-all duration-300 hover:bg-muted/30 group"
+        >
+          <Home className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-medium">Home</span>
+        </Link>
+        
+        <Link 
+          to="/categories" 
+          className="flex flex-col items-center justify-center h-full text-muted-foreground hover:text-primary transition-all duration-300 hover:bg-muted/30 group"
+        >
+          <Grid3X3 className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-medium">Categories</span>
+        </Link>
+        
+        {/* Center Search Button - Highlighted */}
+        <button 
+          onClick={() => setIsSearchOpen(!isSearchOpen)}
+          className="flex flex-col items-center justify-center h-full bg-gradient-spiritual text-white rounded-t-2xl mx-2 shadow-lg hover:shadow-spiritual transition-all duration-300 group -mt-2"
+        >
+          <Search className="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-medium">Search</span>
+        </button>
+        
+        <Link 
+          to="/profile" 
+          className="flex flex-col items-center justify-center h-full text-muted-foreground hover:text-primary transition-all duration-300 hover:bg-muted/30 group"
+        >
+          <User className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-medium">Profile</span>
+        </Link>
+        
+        <Link 
+          to="/wishlist" 
+          className="flex flex-col items-center justify-center h-full text-muted-foreground hover:text-primary transition-all duration-300 hover:bg-muted/30 group relative"
+        >
+          <ShoppingCart className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform" />
+          <span className="absolute -top-1 -right-1 bg-spiritual-teal text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            2
+          </span>
+          <span className="text-xs font-medium">Cart</span>
+        </Link>
+      </div>
+    </div>
+    </>
   )
 }
 
