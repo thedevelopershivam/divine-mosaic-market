@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Sidebar,
   SidebarContent,
@@ -8,78 +8,92 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 import {
   LayoutDashboard,
   Package,
-  FolderTree,
-  Tags,
-  Search,
-  Ticket,
-  CreditCard,
-  Users,
+  Layers,
+  Tag,
   Settings,
-  BarChart3
+  Search,
+  Building2,
+  FileText,
+  Globe,
+  DollarSign,
+  Ruler,
+  Languages,
+  Layers3,
 } from 'lucide-react'
 
-const adminMenuItems = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
-  { title: 'Products', url: '/admin/products', icon: Package },
-  { title: 'Categories', url: '/admin/categories', icon: FolderTree },
-  { title: 'Attributes', url: '/admin/attributes', icon: Tags },
-  { title: 'SEO Settings', url: '/admin/seo', icon: Search },
-  { title: 'Coupons', url: '/admin/coupons', icon: Ticket },
-  { title: 'Orders', url: '/admin/orders', icon: CreditCard },
-  { title: 'Customers', url: '/admin/customers', icon: Users },
-  { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
-  { title: 'Settings', url: '/admin/settings', icon: Settings },
+const navigation = [
+  {
+    title: 'Overview',
+    items: [
+      { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: 'Catalog',
+    items: [
+      { name: 'Products', href: '/admin/products', icon: Package },
+      { name: 'Categories', href: '/admin/categories', icon: Layers },
+      { name: 'Sub Categories', href: '/admin/subcategories', icon: Layers3 },
+      { name: 'Brands', href: '/admin/brands', icon: Building2 },
+      { name: 'Tags', href: '/admin/tags', icon: Tag },
+      { name: 'Attributes', href: '/admin/attributes', icon: Settings },
+    ],
+  },
+  {
+    title: 'Content',
+    items: [
+      { name: 'Blogs', href: '/admin/blogs', icon: FileText },
+    ],
+  },
+  {
+    title: 'Localization',
+    items: [
+      { name: 'Languages', href: '/admin/languages', icon: Languages },
+      { name: 'Countries', href: '/admin/countries', icon: Globe },
+      { name: 'Currencies', href: '/admin/currencies', icon: DollarSign },
+      { name: 'Units', href: '/admin/units', icon: Ruler },
+    ],
+  },
 ]
 
 export function AdminSidebar() {
-  const { collapsed } = useSidebar()
   const location = useLocation()
-  const currentPath = location.pathname
-
-  const isActive = (path: string) => {
-    if (path === '/admin') {
-      return currentPath === '/admin'
-    }
-    return currentPath.startsWith(path)
-  }
-
-  const getNavClassName = (path: string) => {
-    return isActive(path) 
-      ? 'bg-primary text-primary-foreground font-medium' 
-      : 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
-  }
 
   return (
-    <Sidebar className={collapsed ? 'w-16' : 'w-64'} collapsible>
+    <Sidebar className="border-r">
+      <div className="p-4 border-b">
+        <SidebarTrigger />
+        <h2 className="text-lg font-semibold ml-2 inline-block">Admin Panel</h2>
+      </div>
+      
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-primary font-semibold">
-            {!collapsed && 'Admin Panel'}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {adminMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      className={getNavClassName(item.url)}
-                      end={item.url === '/admin'}
+        {navigation.map((section) => (
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={location.pathname === item.href}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      <Link to={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
     </Sidebar>
   )

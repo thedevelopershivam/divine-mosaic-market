@@ -1,264 +1,153 @@
-import { useState } from 'react'
+import { AdminLayout } from '@/components/admin/AdminLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  ShoppingCart, 
-  Users, 
-  Package, 
-  DollarSign, 
-  TrendingUp, 
-  Star,
-  MessageSquare,
-  BarChart3
-} from 'lucide-react'
+import { Package, Layers, Building2, FileText, Users, ShoppingCart, TrendingUp, DollarSign } from 'lucide-react'
 
-const AdminDashboard = () => {
-  const [stats] = useState({
-    totalRevenue: 125600,
-    totalOrders: 1203,
-    totalProducts: 156,
-    totalCustomers: 2834,
-    avgRating: 4.6,
-    totalReviews: 1847
-  })
+const stats = [
+  {
+    title: 'Total Products',
+    value: '1,234',
+    change: '+12%',
+    trend: 'up',
+    icon: Package,
+  },
+  {
+    title: 'Categories',
+    value: '45',
+    change: '+3%',
+    trend: 'up',
+    icon: Layers,
+  },
+  {
+    title: 'Brands',
+    value: '89',
+    change: '+8%',
+    trend: 'up',
+    icon: Building2,
+  },
+  {
+    title: 'Blog Posts',
+    value: '156',
+    change: '+23%',
+    trend: 'up',
+    icon: FileText,
+  },
+  {
+    title: 'Total Orders',
+    value: '2,345',
+    change: '+18%',
+    trend: 'up',
+    icon: ShoppingCart,
+  },
+  {
+    title: 'Revenue',
+    value: '$45,678',
+    change: '+15%',
+    trend: 'up',
+    icon: DollarSign,
+  },
+]
 
-  const recentOrders = [
-    { id: '#ORD-001', customer: 'Sarah Johnson', amount: 2499, status: 'Completed', date: '2024-01-20' },
-    { id: '#ORD-002', customer: 'Mike Chen', amount: 3499, status: 'Processing', date: '2024-01-20' },
-    { id: '#ORD-003', customer: 'Emma Davis', amount: 899, status: 'Shipped', date: '2024-01-19' },
-    { id: '#ORD-004', customer: 'John Smith', amount: 5999, status: 'Pending', date: '2024-01-19' },
-  ]
+const recentActivity = [
+  { action: 'New product added', item: 'Crystal Healing Stone Set', time: '2 minutes ago' },
+  { action: 'Category updated', item: 'Meditation Tools', time: '15 minutes ago' },
+  { action: 'Blog post published', item: 'Benefits of Crystal Healing', time: '1 hour ago' },
+  { action: 'Brand added', item: 'Sacred Stones Co.', time: '2 hours ago' },
+  { action: 'Product updated', item: 'Amethyst Cluster', time: '3 hours ago' },
+]
 
-  const topProducts = [
-    { name: 'Amethyst Crystal Cluster', sales: 45, revenue: 112455 },
-    { name: 'Himalayan Singing Bowl', sales: 32, revenue: 111968 },
-    { name: 'Sacred Sage Bundle', sales: 89, revenue: 80011 },
-    { name: 'Ganesha Statue', sales: 23, revenue: 137977 },
-  ]
-
+export default function AdminDashboard() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-full overflow-x-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-spiritual bg-clip-text text-transparent">
-              Admin Dashboard
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Welcome back! Here's what's happening with your spiritual shop.
-            </p>
-          </div>
-          <Button className="mt-4 lg:mt-0">
-            Generate Report
-          </Button>
+    <AdminLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Welcome to your admin dashboard. Here's an overview of your store.
+          </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                  <Badge variant="secondary" className="text-green-600">
+                    {stat.change}
+                  </Badge>
+                  <span>from last month</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <Card className="col-span-4">
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Latest changes and updates in your store.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₹{stats.totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+12.5%</span> from last month
-              </p>
+              <div className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-foreground">
+                        {activity.action}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.item}
+                      </p>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {activity.time}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          <Card className="col-span-3">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>
+                Common tasks and shortcuts.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalOrders}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+8.2%</span> from last month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Products</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProducts}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-blue-600">+5</span> new this month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Customers</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalCustomers}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+15.3%</span> from last month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
-              <Star className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.avgRating}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+0.2</span> from last month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Reviews</CardTitle>
-              <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalReviews}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+23</span> this week
-              </p>
+            <CardContent className="space-y-2">
+              <div className="grid gap-2">
+                <a href="/admin/products" className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted transition-colors">
+                  <Package className="h-4 w-4" />
+                  <span className="text-sm">Add New Product</span>
+                </a>
+                <a href="/admin/categories" className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted transition-colors">
+                  <Layers className="h-4 w-4" />
+                  <span className="text-sm">Manage Categories</span>
+                </a>
+                <a href="/admin/blogs" className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted transition-colors">
+                  <FileText className="h-4 w-4" />
+                  <span className="text-sm">Write Blog Post</span>
+                </a>
+                <a href="/admin/brands" className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted transition-colors">
+                  <Building2 className="h-4 w-4" />
+                  <span className="text-sm">Add New Brand</span>
+                </a>
+              </div>
             </CardContent>
           </Card>
         </div>
-
-        {/* Content Tabs */}
-        <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="orders">Recent Orders</TabsTrigger>
-            <TabsTrigger value="products">Top Products</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="reviews">Recent Reviews</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="orders" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Orders</CardTitle>
-                <CardDescription>Latest orders from your customers</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <p className="font-medium">{order.id}</p>
-                            <p className="text-sm text-muted-foreground">{order.customer}</p>
-                          </div>
-                          <Badge variant={
-                            order.status === 'Completed' ? 'default' :
-                            order.status === 'Processing' ? 'secondary' :
-                            order.status === 'Shipped' ? 'outline' : 'destructive'
-                          }>
-                            {order.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">₹{order.amount}</p>
-                        <p className="text-sm text-muted-foreground">{order.date}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="products" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Selling Products</CardTitle>
-                <CardDescription>Your best performing products this month</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {topProducts.map((product, index) => (
-                    <div key={product.name} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 bg-gradient-spiritual rounded-full flex items-center justify-center text-white font-bold">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground">{product.sales} sales</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">₹{product.revenue.toLocaleString()}</p>
-                        <p className="text-sm text-muted-foreground">Revenue</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Analytics Overview</CardTitle>
-                <CardDescription>Key performance metrics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center">
-                    <BarChart3 className="h-12 w-12 mx-auto mb-4" />
-                    <p>Analytics charts will be implemented here</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="reviews" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Reviews</CardTitle>
-                <CardDescription>Latest customer feedback</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="font-medium">Sarah M.</p>
-                        <div className="flex items-center gap-1">
-                          {[1,2,3,4,5].map((star) => (
-                            <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">2 hours ago</p>
-                    </div>
-                    <p className="text-sm">"Absolutely beautiful amethyst! The energy is incredible and it looks stunning in my meditation space."</p>
-                    <p className="text-xs text-muted-foreground mt-2">Amethyst Crystal Cluster</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
       </div>
-    </div>
+    </AdminLayout>
   )
 }
-
-export default AdminDashboard

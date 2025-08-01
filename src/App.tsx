@@ -14,10 +14,9 @@ import Profile from "./pages/Profile";
 import Payment from "./pages/Payment";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminProducts from "./pages/admin/AdminProducts";
 import AdminCategories from "./pages/admin/AdminCategories";
-import AdminCoupons from "./pages/admin/AdminCoupons";
-import PageStepper from "./components/PageStepper";
+import AdminSubCategories from "./pages/admin/AdminSubCategories";
+import AdminBrands from "./pages/admin/AdminBrands";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +27,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <div className="min-h-screen w-full overflow-x-hidden">
-          <PageStepper className="border-b bg-card/50" />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/categories" element={<Categories />} />
@@ -42,9 +40,9 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/categories" element={<AdminCategories />} />
-            <Route path="/admin/coupons" element={<AdminCoupons />} />
+            <Route path="/admin/subcategories" element={<AdminSubCategories />} />
+            <Route path="/admin/brands" element={<AdminBrands />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

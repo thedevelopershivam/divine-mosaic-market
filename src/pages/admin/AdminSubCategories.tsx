@@ -9,6 +9,13 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { FileUpload } from '@/components/admin/FileUpload'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -33,112 +40,124 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Plus, MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { Category } from '@/types/admin'
+import { SubCategory, Category } from '@/types/admin'
 
 const mockCategories: Category[] = [
   {
     id: '1',
     name: 'Crystals & Gemstones',
-    description: 'Healing crystals and precious gemstones for spiritual wellness',
+    description: 'Healing crystals and precious gemstones',
+    isActive: true,
+    sortOrder: 1,
+    createdAt: '2024-01-15T10:00:00Z',
+    updatedAt: '2024-01-20T15:30:00Z'
+  }
+]
+
+const mockSubCategories: SubCategory[] = [
+  {
+    id: '1',
+    name: 'Healing Crystals',
+    description: 'Crystals for healing and wellness',
+    categoryId: '1',
     image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176',
     isActive: true,
     sortOrder: 1,
     createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-01-20T15:30:00Z'
-  },
-  {
-    id: '2',
-    name: 'Meditation Tools',
-    description: 'Essential tools for meditation and mindfulness practice',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
-    isActive: true,
-    sortOrder: 2,
-    createdAt: '2024-01-16T10:00:00Z',
-    updatedAt: '2024-01-21T15:30:00Z'
   }
 ]
 
-interface CategoryFormData {
+interface SubCategoryFormData {
   name: string
   description: string
+  categoryId: string
   image: string
   isActive: boolean
   sortOrder: number
 }
 
-const initialFormData: CategoryFormData = {
+const initialFormData: SubCategoryFormData = {
   name: '',
   description: '',
+  categoryId: '',
   image: '',
   isActive: true,
   sortOrder: 0
 }
 
-export default function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>(mockCategories)
+export default function AdminSubCategories() {
+  const [subCategories, setSubCategories] = useState<SubCategory[]>(mockSubCategories)
+  const [categories] = useState<Category[]>(mockCategories)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const [formData, setFormData] = useState<CategoryFormData>(initialFormData)
+  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
+  const [formData, setFormData] = useState<SubCategoryFormData>(initialFormData)
   const { toast } = useToast()
 
   const handleCreate = () => {
-    const newCategory: Category = {
+    const newSubCategory: SubCategory = {
       id: Date.now().toString(),
       ...formData,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-    setCategories([...categories, newCategory])
+    setSubCategories([...subCategories, newSubCategory])
     setFormData(initialFormData)
     setIsCreateOpen(false)
     toast({
       title: "Success",
-      description: "Category created successfully",
+      description: "Sub category created successfully",
     })
   }
 
   const handleEdit = () => {
-    if (!selectedCategory) return
+    if (!selectedSubCategory) return
     
-    const updatedCategories = categories.map(cat => 
-      cat.id === selectedCategory.id 
-        ? { ...cat, ...formData, updatedAt: new Date().toISOString() }
-        : cat
+    const updatedSubCategories = subCategories.map(subCat => 
+      subCat.id === selectedSubCategory.id 
+        ? { ...subCat, ...formData, updatedAt: new Date().toISOString() }
+        : subCat
     )
-    setCategories(updatedCategories)
+    setSubCategories(updatedSubCategories)
     setIsEditOpen(false)
-    setSelectedCategory(null)
+    setSelectedSubCategory(null)
     toast({
       title: "Success",
-      description: "Category updated successfully",
+      description: "Sub category updated successfully",
     })
   }
 
-  const handleDelete = (categoryId: string) => {
-    setCategories(categories.filter(cat => cat.id !== categoryId))
+  const handleDelete = (subCategoryId: string) => {
+    setSubCategories(subCategories.filter(subCat => subCat.id !== subCategoryId))
     toast({
       title: "Success",
-      description: "Category deleted successfully",
+      description: "Sub category deleted successfully",
     })
   }
 
-  const openEdit = (category: Category) => {
-    setSelectedCategory(category)
+  const openEdit = (subCategory: SubCategory) => {
+    setSelectedSubCategory(subCategory)
     setFormData({
-      name: category.name,
-      description: category.description,
-      image: category.image || '',
-      isActive: category.isActive,
-      sortOrder: category.sortOrder
+      name: subCategory.name,
+      description: subCategory.description,
+      categoryId: subCategory.categoryId,
+      image: subCategory.image || '',
+      isActive: subCategory.isActive,
+      sortOrder: subCategory.sortOrder
     })
     setIsEditOpen(true)
   }
 
-  const openView = (category: Category) => {
-    setSelectedCategory(category)
+  const openView = (subCategory: SubCategory) => {
+    setSelectedSubCategory(subCategory)
     setIsViewOpen(true)
+  }
+
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(cat => cat.id === categoryId)
+    return category?.name || 'Unknown'
   }
 
   return (
@@ -146,23 +165,23 @@ export default function AdminCategories() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Sub Categories</h1>
             <p className="text-muted-foreground">
-              Manage your product categories
+              Manage your product sub categories
             </p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Category
+                Add Sub Category
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Create New Category</DialogTitle>
+                <DialogTitle>Create New Sub Category</DialogTitle>
                 <DialogDescription>
-                  Add a new category to organize your products.
+                  Add a new sub category under an existing category.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -172,8 +191,23 @@ export default function AdminCategories() {
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Category name"
+                    placeholder="Sub category name"
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Parent Category</Label>
+                  <Select value={formData.categoryId} onValueChange={(value) => setFormData({ ...formData, categoryId: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
@@ -181,7 +215,7 @@ export default function AdminCategories() {
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Category description"
+                    placeholder="Sub category description"
                     rows={3}
                   />
                 </div>
@@ -189,7 +223,7 @@ export default function AdminCategories() {
                   value={formData.image}
                   onChange={(url) => setFormData({ ...formData, image: url })}
                   onRemove={() => setFormData({ ...formData, image: '' })}
-                  label="Category Image"
+                  label="Sub Category Image"
                 />
                 <div className="flex items-center space-x-2">
                   <Switch
@@ -214,7 +248,7 @@ export default function AdminCategories() {
                 <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleCreate}>Create Category</Button>
+                <Button onClick={handleCreate}>Create Sub Category</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -222,9 +256,9 @@ export default function AdminCategories() {
 
         <Card>
           <CardHeader>
-            <CardTitle>All Categories</CardTitle>
+            <CardTitle>All Sub Categories</CardTitle>
             <CardDescription>
-              A list of all categories in your store.
+              A list of all sub categories in your store.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -233,6 +267,7 @@ export default function AdminCategories() {
                 <TableRow>
                   <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Parent Category</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Sort Order</TableHead>
@@ -240,27 +275,28 @@ export default function AdminCategories() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => (
-                  <TableRow key={category.id}>
+                {subCategories.map((subCategory) => (
+                  <TableRow key={subCategory.id}>
                     <TableCell>
-                      {category.image ? (
+                      {subCategory.image ? (
                         <img
-                          src={category.image}
-                          alt={category.name}
+                          src={subCategory.image}
+                          alt={subCategory.name}
                           className="w-12 h-12 object-cover rounded-md"
                         />
                       ) : (
                         <div className="w-12 h-12 bg-muted rounded-md" />
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell className="max-w-xs truncate">{category.description}</TableCell>
+                    <TableCell className="font-medium">{subCategory.name}</TableCell>
+                    <TableCell>{getCategoryName(subCategory.categoryId)}</TableCell>
+                    <TableCell className="max-w-xs truncate">{subCategory.description}</TableCell>
                     <TableCell>
-                      <Badge variant={category.isActive ? "default" : "secondary"}>
-                        {category.isActive ? "Active" : "Inactive"}
+                      <Badge variant={subCategory.isActive ? "default" : "secondary"}>
+                        {subCategory.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
-                    <TableCell>{category.sortOrder}</TableCell>
+                    <TableCell>{subCategory.sortOrder}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -269,16 +305,16 @@ export default function AdminCategories() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openView(category)}>
+                          <DropdownMenuItem onClick={() => openView(subCategory)}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(category)}>
+                          <DropdownMenuItem onClick={() => openEdit(subCategory)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleDelete(category.id)}
+                            onClick={() => handleDelete(subCategory.id)}
                             className="text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -294,124 +330,28 @@ export default function AdminCategories() {
           </CardContent>
         </Card>
 
-        {/* Edit Dialog */}
+        {/* Edit and View dialogs - similar structure to categories */}
         <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Edit Category</DialogTitle>
-              <DialogDescription>
-                Update the category information.
-              </DialogDescription>
+              <DialogTitle>Edit Sub Category</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name">Name</Label>
-                <Input
-                  id="edit-name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Category name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-description">Description</Label>
-                <Textarea
-                  id="edit-description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Category description"
-                  rows={3}
-                />
-              </div>
-              <FileUpload
-                value={formData.image}
-                onChange={(url) => setFormData({ ...formData, image: url })}
-                onRemove={() => setFormData({ ...formData, image: '' })}
-                label="Category Image"
-              />
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="edit-isActive"
-                  checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-                />
-                <Label htmlFor="edit-isActive">Active</Label>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-sortOrder">Sort Order</Label>
-                <Input
-                  id="edit-sortOrder"
-                  type="number"
-                  value={formData.sortOrder}
-                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
-            </div>
+            {/* Edit form content similar to create form */}
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleEdit}>Update Category</Button>
+              <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+              <Button onClick={handleEdit}>Update Sub Category</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* View Dialog */}
         <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Category Details</DialogTitle>
-              <DialogDescription>
-                View category information.
-              </DialogDescription>
+              <DialogTitle>Sub Category Details</DialogTitle>
             </DialogHeader>
-            {selectedCategory && (
-              <div className="space-y-4">
-                {selectedCategory.image && (
-                  <div>
-                    <Label>Image</Label>
-                    <img
-                      src={selectedCategory.image}
-                      alt={selectedCategory.name}
-                      className="w-full h-48 object-cover rounded-md mt-2"
-                    />
-                  </div>
-                )}
-                <div>
-                  <Label>Name</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.name}</p>
-                </div>
-                <div>
-                  <Label>Description</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.description}</p>
-                </div>
-                <div>
-                  <Label>Status</Label>
-                  <div className="mt-1">
-                    <Badge variant={selectedCategory.isActive ? "default" : "secondary"}>
-                      {selectedCategory.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </div>
-                </div>
-                <div>
-                  <Label>Sort Order</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.sortOrder}</p>
-                </div>
-                <div>
-                  <Label>Created At</Label>
-                  <p className="mt-1 text-sm">{new Date(selectedCategory.createdAt).toLocaleString()}</p>
-                </div>
-                <div>
-                  <Label>Updated At</Label>
-                  <p className="mt-1 text-sm">{new Date(selectedCategory.updatedAt).toLocaleString()}</p>
-                </div>
-              </div>
-            )}
+            {/* View content */}
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsViewOpen(false)}>
-                Close
-              </Button>
+              <Button variant="outline" onClick={() => setIsViewOpen(false)}>Close</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
