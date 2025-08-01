@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,24 +28,21 @@ export function SEOManager() {
   }, [seoSettings])
 
   const handleSubmit = async (page: string) => {
-    const settings = formData[page]
-    if (!settings) return
-
     try {
-      await updateSEOSettings({
-        id: settings.id,
-        data: {
-          title: settings.title,
-          description: settings.description,
-          keywords: settings.keywords,
-          ogTitle: settings.ogTitle,
-          ogDescription: settings.ogDescription,
-          ogImage: settings.ogImage
-        }
-      }).unwrap()
-      toast({ title: `SEO settings updated for ${page} page` })
+      const settings = formData[page]
+      if (settings) {
+        await updateSEOSettings({ id: settings.id, data: settings })
+        toast({
+          title: "Success",
+          description: `SEO settings for ${page} updated successfully`,
+        })
+      }
     } catch (error) {
-      toast({ title: 'Error', description: 'Failed to update SEO settings', variant: 'destructive' })
+      toast({
+        title: "Error",
+        description: "Failed to update SEO settings",
+        variant: "destructive",
+      })
     }
   }
 
@@ -54,154 +51,123 @@ export function SEOManager() {
       ...prev,
       [page]: {
         ...prev[page],
-        [field]: value
+        [field]: value,
+        updatedAt: new Date().toISOString()
       }
     }))
   }
 
   if (isLoading) {
-    return <div>Loading SEO settings...</div>
+    return <div>Loading...</div>
   }
 
-  const pages = [
-    { key: 'home', label: 'Home Page', icon: '🏠' },
-    { key: 'products', label: 'Products', icon: '🛍️' },
-    { key: 'categories', label: 'Categories', icon: '📂' },
-    { key: 'about', label: 'About Us', icon: 'ℹ️' },
-    { key: 'contact', label: 'Contact', icon: '📞' }
-  ]
+  const pages = ['home', 'categories', 'products', 'about', 'contact']
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            <div>
-              <CardTitle>SEO Management</CardTitle>
-              <CardDescription>Manage SEO settings for different pages</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="home" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
-              {pages.map(page => (
-                <TabsTrigger key={page.key} value={page.key} className="flex items-center gap-2">
-                  <span>{page.icon}</span>
-                  <span className="hidden sm:inline">{page.label}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">SEO Settings</h2>
+          <p className="text-muted-foreground">
+            Manage SEO metadata for different pages
+          </p>
+        </div>
+      </div>
 
-            {pages.map(page => {
-              const settings = formData[page.key]
-              if (!settings) return null
+      <Tabs defaultValue="home" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5">
+          {pages.map(page => (
+            <TabsTrigger key={page} value={page} className="capitalize">
+              {page}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-              return (
-                <TabsContent key={page.key} value={page.key} className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <span>{page.icon}</span>
-                        {page.label} SEO Settings
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <Label htmlFor={`${page.key}-title`}>Page Title</Label>
-                        <Input
-                          id={`${page.key}-title`}
-                          value={settings.title}
-                          onChange={(e) => updateFormData(page.key, 'title', e.target.value)}
-                          placeholder="Enter page title"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Recommended: 50-60 characters
-                        </p>
-                      </div>
+        {pages.map(page => (
+          <TabsContent key={page} value={page}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="capitalize">{page} Page SEO</CardTitle>
+                <CardDescription>
+                  Configure SEO settings for the {page} page
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-title`}>Page Title</Label>
+                    <Input
+                      id={`${page}-title`}
+                      value={formData[page]?.title || ''}
+                      onChange={(e) => updateFormData(page, 'title', e.target.value)}
+                      placeholder="Enter page title"
+                    />
+                  </div>
 
-                      <div>
-                        <Label htmlFor={`${page.key}-description`}>Meta Description</Label>
-                        <Textarea
-                          id={`${page.key}-description`}
-                          value={settings.description}
-                          onChange={(e) => updateFormData(page.key, 'description', e.target.value)}
-                          placeholder="Enter meta description"
-                          rows={3}
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Recommended: 150-160 characters
-                        </p>
-                      </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-description`}>Meta Description</Label>
+                    <Textarea
+                      id={`${page}-description`}
+                      value={formData[page]?.description || ''}
+                      onChange={(e) => updateFormData(page, 'description', e.target.value)}
+                      placeholder="Enter meta description"
+                      rows={3}
+                    />
+                  </div>
 
-                      <div>
-                        <Label htmlFor={`${page.key}-keywords`}>Keywords</Label>
-                        <Input
-                          id={`${page.key}-keywords`}
-                          value={settings.keywords}
-                          onChange={(e) => updateFormData(page.key, 'keywords', e.target.value)}
-                          placeholder="keyword1, keyword2, keyword3"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Comma-separated keywords
-                        </p>
-                      </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-keywords`}>Keywords</Label>
+                    <Input
+                      id={`${page}-keywords`}
+                      value={formData[page]?.keywords || ''}
+                      onChange={(e) => updateFormData(page, 'keywords', e.target.value)}
+                      placeholder="Enter keywords separated by commas"
+                    />
+                  </div>
 
-                      <div className="border-t pt-4">
-                        <h4 className="font-medium mb-4">Open Graph Settings</h4>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor={`${page.key}-og-title`}>OG Title</Label>
-                            <Input
-                              id={`${page.key}-og-title`}
-                              value={settings.ogTitle || ''}
-                              onChange={(e) => updateFormData(page.key, 'ogTitle', e.target.value)}
-                              placeholder="Open Graph title (optional)"
-                            />
-                          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-og-title`}>Open Graph Title</Label>
+                    <Input
+                      id={`${page}-og-title`}
+                      value={formData[page]?.ogTitle || ''}
+                      onChange={(e) => updateFormData(page, 'ogTitle', e.target.value)}
+                      placeholder="Enter Open Graph title"
+                    />
+                  </div>
 
-                          <div>
-                            <Label htmlFor={`${page.key}-og-description`}>OG Description</Label>
-                            <Textarea
-                              id={`${page.key}-og-description`}
-                              value={settings.ogDescription || ''}
-                              onChange={(e) => updateFormData(page.key, 'ogDescription', e.target.value)}
-                              placeholder="Open Graph description (optional)"
-                              rows={2}
-                            />
-                          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-og-description`}>Open Graph Description</Label>
+                    <Textarea
+                      id={`${page}-og-description`}
+                      value={formData[page]?.ogDescription || ''}
+                      onChange={(e) => updateFormData(page, 'ogDescription', e.target.value)}
+                      placeholder="Enter Open Graph description"
+                      rows={3}
+                    />
+                  </div>
 
-                          <div>
-                            <Label htmlFor={`${page.key}-og-image`}>OG Image URL</Label>
-                            <Input
-                              id={`${page.key}-og-image`}
-                              value={settings.ogImage || ''}
-                              onChange={(e) => updateFormData(page.key, 'ogImage', e.target.value)}
-                              placeholder="https://example.com/image.jpg"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`${page}-og-image`}>Open Graph Image URL</Label>
+                    <Input
+                      id={`${page}-og-image`}
+                      value={formData[page]?.ogImage || ''}
+                      onChange={(e) => updateFormData(page, 'ogImage', e.target.value)}
+                      placeholder="Enter Open Graph image URL"
+                    />
+                  </div>
+                </div>
 
-                      <div className="flex justify-end pt-4">
-                        <Button 
-                          onClick={() => handleSubmit(page.key)}
-                          className="flex items-center gap-2"
-                        >
-                          <Save className="h-4 w-4" />
-                          Save {page.label} SEO
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              )
-            })}
-          </Tabs>
-        </CardContent>
-      </Card>
+                <div className="flex justify-end">
+                  <Button onClick={() => handleSubmit(page)}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   )
 }

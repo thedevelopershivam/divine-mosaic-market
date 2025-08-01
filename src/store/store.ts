@@ -1,12 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { adminApi } from './adminApi'
 
 export const store = configureStore({
   reducer: {
-    [adminApi.reducerPath]: adminApi.reducer,
+    // Simple store without RTK Query API slice
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(adminApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 })
 
 export type RootState = ReturnType<typeof store.getState>

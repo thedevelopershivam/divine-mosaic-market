@@ -1,6 +1,4 @@
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-
-// Simple interfaces to avoid TypeScript complexity
+// Simple mock API without RTK Query to avoid TypeScript internal errors
 export interface Category {
   id: string
   name: string
@@ -18,7 +16,7 @@ export interface Category {
 export interface Attribute {
   id: string
   name: string
-  type: string
+  type: 'text' | 'select'
   values?: string[]
   isRequired: boolean
   isFilterable: boolean
@@ -30,7 +28,7 @@ export interface Attribute {
 export interface Coupon {
   id: string
   code: string
-  type: string
+  type: 'percentage' | 'fixed'
   value: number
   minOrderValue?: number
   maxDiscount?: number
@@ -55,7 +53,7 @@ export interface SEOSettings {
   updatedAt: string
 }
 
-// Simple mock data
+// Mock data
 const mockCategories: Category[] = [
   {
     id: '1',
@@ -109,167 +107,154 @@ const mockSEOSettings: SEOSettings[] = [
   }
 ]
 
-export const adminApi = createApi({
-  reducerPath: 'adminApi',
-  baseQuery: fakeBaseQuery(),
-  tagTypes: ['Category', 'Attribute', 'Coupon', 'SEO'],
-  endpoints: (builder) => ({
-    // Categories
-    getCategories: builder.query<Category[], void>({
-      queryFn: () => ({ data: mockCategories }),
-      providesTags: ['Category'],
-    }),
-    createCategory: builder.mutation({
-      queryFn: (newCategory: any) => {
-        const category = {
-          id: Date.now().toString(),
-          ...newCategory,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-        mockCategories.push(category)
-        return { data: category }
-      },
-      invalidatesTags: ['Category'],
-    }),
-    updateCategory: builder.mutation({
-      queryFn: ({ id, data }: any) => {
-        const index = mockCategories.findIndex(cat => cat.id === id)
-        if (index !== -1) {
-          mockCategories[index] = { ...mockCategories[index], ...data }
-          return { data: mockCategories[index] }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Category'],
-    }),
-    deleteCategory: builder.mutation({
-      queryFn: (id: string) => {
-        const index = mockCategories.findIndex(cat => cat.id === id)
-        if (index !== -1) {
-          mockCategories.splice(index, 1)
-          return { data: undefined }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Category'],
-    }),
-
-    // Attributes
-    getAttributes: builder.query<Attribute[], void>({
-      queryFn: () => ({ data: mockAttributes }),
-      providesTags: ['Attribute'],
-    }),
-    createAttribute: builder.mutation({
-      queryFn: (newAttribute: any) => {
-        const attribute = {
-          id: Date.now().toString(),
-          ...newAttribute,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-        mockAttributes.push(attribute)
-        return { data: attribute }
-      },
-      invalidatesTags: ['Attribute'],
-    }),
-    updateAttribute: builder.mutation({
-      queryFn: ({ id, data }: any) => {
-        const index = mockAttributes.findIndex(attr => attr.id === id)
-        if (index !== -1) {
-          mockAttributes[index] = { ...mockAttributes[index], ...data }
-          return { data: mockAttributes[index] }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Attribute'],
-    }),
-    deleteAttribute: builder.mutation({
-      queryFn: (id: string) => {
-        const index = mockAttributes.findIndex(attr => attr.id === id)
-        if (index !== -1) {
-          mockAttributes.splice(index, 1)
-          return { data: undefined }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Attribute'],
-    }),
-
-    // Coupons
-    getCoupons: builder.query<Coupon[], void>({
-      queryFn: () => ({ data: mockCoupons }),
-      providesTags: ['Coupon'],
-    }),
-    createCoupon: builder.mutation({
-      queryFn: (newCoupon: any) => {
-        const coupon = {
-          id: Date.now().toString(),
-          usedCount: 0,
-          ...newCoupon,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-        mockCoupons.push(coupon)
-        return { data: coupon }
-      },
-      invalidatesTags: ['Coupon'],
-    }),
-    updateCoupon: builder.mutation({
-      queryFn: ({ id, data }: any) => {
-        const index = mockCoupons.findIndex(coupon => coupon.id === id)
-        if (index !== -1) {
-          mockCoupons[index] = { ...mockCoupons[index], ...data }
-          return { data: mockCoupons[index] }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Coupon'],
-    }),
-    deleteCoupon: builder.mutation({
-      queryFn: (id: string) => {
-        const index = mockCoupons.findIndex(coupon => coupon.id === id)
-        if (index !== -1) {
-          mockCoupons.splice(index, 1)
-          return { data: undefined }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['Coupon'],
-    }),
-
-    // SEO Settings
-    getSEOSettings: builder.query<SEOSettings[], void>({
-      queryFn: () => ({ data: mockSEOSettings }),
-      providesTags: ['SEO'],
-    }),
-    updateSEOSettings: builder.mutation({
-      queryFn: ({ id, data }: any) => {
-        const index = mockSEOSettings.findIndex(seo => seo.id === id)
-        if (index !== -1) {
-          mockSEOSettings[index] = { ...mockSEOSettings[index], ...data }
-          return { data: mockSEOSettings[index] }
-        }
-        return { error: 'Not found' }
-      },
-      invalidatesTags: ['SEO'],
-    }),
-  }),
+// Simple hooks that simulate the RTK Query API
+export const useGetCategoriesQuery = () => ({
+  data: mockCategories,
+  isLoading: false,
+  error: null
 })
 
-export const {
-  useGetCategoriesQuery,
-  useCreateCategoryMutation,
-  useUpdateCategoryMutation,
-  useDeleteCategoryMutation,
-  useGetAttributesQuery,
-  useCreateAttributeMutation,
-  useUpdateAttributeMutation,
-  useDeleteAttributeMutation,
-  useGetCouponsQuery,
-  useCreateCouponMutation,
-  useUpdateCouponMutation,
-  useDeleteCouponMutation,
-  useGetSEOSettingsQuery,
-  useUpdateSEOSettingsMutation,
-} = adminApi
+export const useCreateCategoryMutation = () => {
+  const mutate = (newCategory: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const category: Category = {
+      id: Date.now().toString(),
+      ...newCategory,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    mockCategories.push(category)
+    return Promise.resolve({ data: category })
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useUpdateCategoryMutation = () => {
+  const mutate = ({ id, data }: { id: string; data: Partial<Category> }) => {
+    const index = mockCategories.findIndex(cat => cat.id === id)
+    if (index !== -1) {
+      mockCategories[index] = { ...mockCategories[index], ...data, updatedAt: new Date().toISOString() }
+      return Promise.resolve({ data: mockCategories[index] })
+    }
+    return Promise.reject(new Error('Category not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useDeleteCategoryMutation = () => {
+  const mutate = (id: string) => {
+    const index = mockCategories.findIndex(cat => cat.id === id)
+    if (index !== -1) {
+      mockCategories.splice(index, 1)
+      return Promise.resolve({ data: undefined })
+    }
+    return Promise.reject(new Error('Category not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useGetAttributesQuery = () => ({
+  data: mockAttributes,
+  isLoading: false,
+  error: null
+})
+
+export const useCreateAttributeMutation = () => {
+  const mutate = (newAttribute: Omit<Attribute, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const attribute: Attribute = {
+      id: Date.now().toString(),
+      ...newAttribute,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    mockAttributes.push(attribute)
+    return Promise.resolve({ data: attribute })
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useUpdateAttributeMutation = () => {
+  const mutate = ({ id, data }: { id: string; data: Partial<Attribute> }) => {
+    const index = mockAttributes.findIndex(attr => attr.id === id)
+    if (index !== -1) {
+      mockAttributes[index] = { ...mockAttributes[index], ...data, updatedAt: new Date().toISOString() }
+      return Promise.resolve({ data: mockAttributes[index] })
+    }
+    return Promise.reject(new Error('Attribute not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useDeleteAttributeMutation = () => {
+  const mutate = (id: string) => {
+    const index = mockAttributes.findIndex(attr => attr.id === id)
+    if (index !== -1) {
+      mockAttributes.splice(index, 1)
+      return Promise.resolve({ data: undefined })
+    }
+    return Promise.reject(new Error('Attribute not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useGetCouponsQuery = () => ({
+  data: mockCoupons,
+  isLoading: false,
+  error: null
+})
+
+export const useCreateCouponMutation = () => {
+  const mutate = (newCoupon: Omit<Coupon, 'id' | 'usedCount' | 'createdAt' | 'updatedAt'>) => {
+    const coupon: Coupon = {
+      id: Date.now().toString(),
+      usedCount: 0,
+      ...newCoupon,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    mockCoupons.push(coupon)
+    return Promise.resolve({ data: coupon })
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useUpdateCouponMutation = () => {
+  const mutate = ({ id, data }: { id: string; data: Partial<Coupon> }) => {
+    const index = mockCoupons.findIndex(coupon => coupon.id === id)
+    if (index !== -1) {
+      mockCoupons[index] = { ...mockCoupons[index], ...data, updatedAt: new Date().toISOString() }
+      return Promise.resolve({ data: mockCoupons[index] })
+    }
+    return Promise.reject(new Error('Coupon not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useDeleteCouponMutation = () => {
+  const mutate = (id: string) => {
+    const index = mockCoupons.findIndex(coupon => coupon.id === id)
+    if (index !== -1) {
+      mockCoupons.splice(index, 1)
+      return Promise.resolve({ data: undefined })
+    }
+    return Promise.reject(new Error('Coupon not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
+
+export const useGetSEOSettingsQuery = () => ({
+  data: mockSEOSettings,
+  isLoading: false,
+  error: null
+})
+
+export const useUpdateSEOSettingsMutation = () => {
+  const mutate = ({ id, data }: { id: string; data: Partial<SEOSettings> }) => {
+    const index = mockSEOSettings.findIndex(seo => seo.id === id)
+    if (index !== -1) {
+      mockSEOSettings[index] = { ...mockSEOSettings[index], ...data, updatedAt: new Date().toISOString() }
+      return Promise.resolve({ data: mockSEOSettings[index] })
+    }
+    return Promise.reject(new Error('SEO settings not found'))
+  }
+  return [mutate, { isLoading: false }]
+}
