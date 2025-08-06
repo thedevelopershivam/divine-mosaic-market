@@ -9,10 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
-import { Tag } from "@/types/admin"
-
 export default function AdminTags() {
-  const [tags, setTags] = useState<Tag[]>([
+  const [tags, setTags] = useState([
     {
       id: "1",
       name: "Healing",
@@ -32,14 +30,14 @@ export default function AdminTags() {
   ])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingTag, setEditingTag] = useState<Tag | null>(null)
+  const [editingTag, setEditingTag] = useState(null)
   const [formData, setFormData] = useState({
     name: "",
     color: "#3b82f6",
     isActive: true
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     
     if (editingTag) {
@@ -49,7 +47,7 @@ export default function AdminTags() {
           : tag
       ))
     } else {
-      const newTag: Tag = {
+      const newTag = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
         createdAt: new Date().toISOString(),
@@ -67,7 +65,7 @@ export default function AdminTags() {
     setIsDialogOpen(false)
   }
 
-  const handleEdit = (tag: Tag) => {
+  const handleEdit = (tag) => {
     setEditingTag(tag)
     setFormData({
       name: tag.name,
@@ -77,7 +75,7 @@ export default function AdminTags() {
     setIsDialogOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     setTags(tags.filter(tag => tag.id !== id))
   }
 

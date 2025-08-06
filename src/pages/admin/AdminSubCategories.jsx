@@ -40,9 +40,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Plus, MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { SubCategory, Category } from '@/types/admin'
-
-const mockCategories: Category[] = [
+const mockCategories = [
   {
     id: '1',
     name: 'Crystals & Gemstones',
@@ -54,7 +52,7 @@ const mockCategories: Category[] = [
   }
 ]
 
-const mockSubCategories: SubCategory[] = [
+const mockSubCategories = [
   {
     id: '1',
     name: 'Healing Crystals',
@@ -68,16 +66,7 @@ const mockSubCategories: SubCategory[] = [
   }
 ]
 
-interface SubCategoryFormData {
-  name: string
-  description: string
-  categoryId: string
-  image: string
-  isActive: boolean
-  sortOrder: number
-}
-
-const initialFormData: SubCategoryFormData = {
+const initialFormData = {
   name: '',
   description: '',
   categoryId: '',
@@ -87,17 +76,17 @@ const initialFormData: SubCategoryFormData = {
 }
 
 export default function AdminSubCategories() {
-  const [subCategories, setSubCategories] = useState<SubCategory[]>(mockSubCategories)
-  const [categories] = useState<Category[]>(mockCategories)
+  const [subCategories, setSubCategories] = useState(mockSubCategories)
+  const [categories] = useState(mockCategories)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
-  const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory | null>(null)
-  const [formData, setFormData] = useState<SubCategoryFormData>(initialFormData)
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null)
+  const [formData, setFormData] = useState(initialFormData)
   const { toast } = useToast()
 
   const handleCreate = () => {
-    const newSubCategory: SubCategory = {
+    const newSubCategory = {
       id: Date.now().toString(),
       ...formData,
       createdAt: new Date().toISOString(),
@@ -129,7 +118,7 @@ export default function AdminSubCategories() {
     })
   }
 
-  const handleDelete = (subCategoryId: string) => {
+  const handleDelete = (subCategoryId) => {
     setSubCategories(subCategories.filter(subCat => subCat.id !== subCategoryId))
     toast({
       title: "Success",
@@ -137,7 +126,7 @@ export default function AdminSubCategories() {
     })
   }
 
-  const openEdit = (subCategory: SubCategory) => {
+  const openEdit = (subCategory) => {
     setSelectedSubCategory(subCategory)
     setFormData({
       name: subCategory.name,
@@ -150,12 +139,12 @@ export default function AdminSubCategories() {
     setIsEditOpen(true)
   }
 
-  const openView = (subCategory: SubCategory) => {
+  const openView = (subCategory) => {
     setSelectedSubCategory(subCategory)
     setIsViewOpen(true)
   }
 
-  const getCategoryName = (categoryId: string) => {
+  const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId)
     return category?.name || 'Unknown'
   }

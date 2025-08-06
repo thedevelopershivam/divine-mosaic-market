@@ -31,113 +31,93 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus, MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
+import { Plus, MoreHorizontal, Edit, Trash2, Eye, ExternalLink } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { Category } from '@/types/admin'
-
-const mockCategories: Category[] = [
+const mockBrands = [
   {
     id: '1',
-    name: 'Crystals & Gemstones',
-    description: 'Healing crystals and precious gemstones for spiritual wellness',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176',
+    name: 'Sacred Stones Co.',
+    description: 'Premium healing crystals and spiritual tools',
+    logo: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    website: 'https://sacredstones.com',
     isActive: true,
-    sortOrder: 1,
     createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-01-20T15:30:00Z'
-  },
-  {
-    id: '2',
-    name: 'Meditation Tools',
-    description: 'Essential tools for meditation and mindfulness practice',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
-    isActive: true,
-    sortOrder: 2,
-    createdAt: '2024-01-16T10:00:00Z',
-    updatedAt: '2024-01-21T15:30:00Z'
   }
 ]
 
-interface CategoryFormData {
-  name: string
-  description: string
-  image: string
-  isActive: boolean
-  sortOrder: number
-}
-
-const initialFormData: CategoryFormData = {
+const initialFormData = {
   name: '',
   description: '',
-  image: '',
-  isActive: true,
-  sortOrder: 0
+  logo: '',
+  website: '',
+  isActive: true
 }
 
-export default function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>(mockCategories)
+export default function AdminBrands() {
+  const [brands, setBrands] = useState(mockBrands)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const [formData, setFormData] = useState<CategoryFormData>(initialFormData)
+  const [selectedBrand, setSelectedBrand] = useState(null)
+  const [formData, setFormData] = useState(initialFormData)
   const { toast } = useToast()
 
   const handleCreate = () => {
-    const newCategory: Category = {
+    const newBrand = {
       id: Date.now().toString(),
       ...formData,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
-    setCategories([...categories, newCategory])
+    setBrands([...brands, newBrand])
     setFormData(initialFormData)
     setIsCreateOpen(false)
     toast({
       title: "Success",
-      description: "Category created successfully",
+      description: "Brand created successfully",
     })
   }
 
   const handleEdit = () => {
-    if (!selectedCategory) return
+    if (!selectedBrand) return
     
-    const updatedCategories = categories.map(cat => 
-      cat.id === selectedCategory.id 
-        ? { ...cat, ...formData, updatedAt: new Date().toISOString() }
-        : cat
+    const updatedBrands = brands.map(brand => 
+      brand.id === selectedBrand.id 
+        ? { ...brand, ...formData, updatedAt: new Date().toISOString() }
+        : brand
     )
-    setCategories(updatedCategories)
+    setBrands(updatedBrands)
     setIsEditOpen(false)
-    setSelectedCategory(null)
+    setSelectedBrand(null)
     toast({
       title: "Success",
-      description: "Category updated successfully",
+      description: "Brand updated successfully",
     })
   }
 
-  const handleDelete = (categoryId: string) => {
-    setCategories(categories.filter(cat => cat.id !== categoryId))
+  const handleDelete = (brandId) => {
+    setBrands(brands.filter(brand => brand.id !== brandId))
     toast({
       title: "Success",
-      description: "Category deleted successfully",
+      description: "Brand deleted successfully",
     })
   }
 
-  const openEdit = (category: Category) => {
-    setSelectedCategory(category)
+  const openEdit = (brand) => {
+    setSelectedBrand(brand)
     setFormData({
-      name: category.name,
-      description: category.description,
-      image: category.image || '',
-      isActive: category.isActive,
-      sortOrder: category.sortOrder
+      name: brand.name,
+      description: brand.description,
+      logo: brand.logo || '',
+      website: brand.website || '',
+      isActive: brand.isActive
     })
     setIsEditOpen(true)
   }
 
-  const openView = (category: Category) => {
-    setSelectedCategory(category)
+  const openView = (brand) => {
+    setSelectedBrand(brand)
     setIsViewOpen(true)
   }
 
@@ -146,33 +126,33 @@ export default function AdminCategories() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Brands</h1>
             <p className="text-muted-foreground">
-              Manage your product categories
+              Manage product brands and manufacturers
             </p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Category
+                Add Brand
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Create New Category</DialogTitle>
+                <DialogTitle>Create New Brand</DialogTitle>
                 <DialogDescription>
-                  Add a new category to organize your products.
+                  Add a new brand to your store.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">Brand Name</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Category name"
+                    placeholder="Brand name"
                   />
                 </div>
                 <div className="space-y-2">
@@ -181,16 +161,26 @@ export default function AdminCategories() {
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Category description"
+                    placeholder="Brand description"
                     rows={3}
                   />
                 </div>
                 <FileUpload
-                  value={formData.image}
-                  onChange={(url) => setFormData({ ...formData, image: url })}
-                  onRemove={() => setFormData({ ...formData, image: '' })}
-                  label="Category Image"
+                  value={formData.logo}
+                  onChange={(url) => setFormData({ ...formData, logo: url })}
+                  onRemove={() => setFormData({ ...formData, logo: '' })}
+                  label="Brand Logo"
                 />
+                <div className="space-y-2">
+                  <Label htmlFor="website">Website URL</Label>
+                  <Input
+                    id="website"
+                    type="url"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    placeholder="https://example.com"
+                  />
+                </div>
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="isActive"
@@ -199,22 +189,12 @@ export default function AdminCategories() {
                   />
                   <Label htmlFor="isActive">Active</Label>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sortOrder">Sort Order</Label>
-                  <Input
-                    id="sortOrder"
-                    type="number"
-                    value={formData.sortOrder}
-                    onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                  />
-                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleCreate}>Create Category</Button>
+                <Button onClick={handleCreate}>Create Brand</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -222,45 +202,61 @@ export default function AdminCategories() {
 
         <Card>
           <CardHeader>
-            <CardTitle>All Categories</CardTitle>
+            <CardTitle>All Brands</CardTitle>
             <CardDescription>
-              A list of all categories in your store.
+              A list of all brands in your store.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Image</TableHead>
+                  <TableHead>Logo</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>Website</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Sort Order</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => (
-                  <TableRow key={category.id}>
+                {brands.map((brand) => (
+                  <TableRow key={brand.id}>
                     <TableCell>
-                      {category.image ? (
+                      {brand.logo ? (
                         <img
-                          src={category.image}
-                          alt={category.name}
+                          src={brand.logo}
+                          alt={brand.name}
                           className="w-12 h-12 object-cover rounded-md"
                         />
                       ) : (
-                        <div className="w-12 h-12 bg-muted rounded-md" />
+                        <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center">
+                          <span className="text-xs text-muted-foreground">No Logo</span>
+                        </div>
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell className="max-w-xs truncate">{category.description}</TableCell>
+                    <TableCell className="font-medium">{brand.name}</TableCell>
+                    <TableCell className="max-w-xs truncate">{brand.description}</TableCell>
                     <TableCell>
-                      <Badge variant={category.isActive ? "default" : "secondary"}>
-                        {category.isActive ? "Active" : "Inactive"}
+                      {brand.website ? (
+                        <a
+                          href={brand.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-1 text-primary hover:underline"
+                        >
+                          <span className="truncate max-w-[100px]">{brand.website}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">No website</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={brand.isActive ? "default" : "secondary"}>
+                        {brand.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
-                    <TableCell>{category.sortOrder}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -269,16 +265,16 @@ export default function AdminCategories() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openView(category)}>
+                          <DropdownMenuItem onClick={() => openView(brand)}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(category)}>
+                          <DropdownMenuItem onClick={() => openEdit(brand)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleDelete(category.id)}
+                            onClick={() => handleDelete(brand.id)}
                             className="text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -298,19 +294,19 @@ export default function AdminCategories() {
         <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Edit Category</DialogTitle>
+              <DialogTitle>Edit Brand</DialogTitle>
               <DialogDescription>
-                Update the category information.
+                Update the brand information.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-name">Name</Label>
+                <Label htmlFor="edit-name">Brand Name</Label>
                 <Input
                   id="edit-name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Category name"
+                  placeholder="Brand name"
                 />
               </div>
               <div className="space-y-2">
@@ -319,16 +315,26 @@ export default function AdminCategories() {
                   id="edit-description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Category description"
+                  placeholder="Brand description"
                   rows={3}
                 />
               </div>
               <FileUpload
-                value={formData.image}
-                onChange={(url) => setFormData({ ...formData, image: url })}
-                onRemove={() => setFormData({ ...formData, image: '' })}
-                label="Category Image"
+                value={formData.logo}
+                onChange={(url) => setFormData({ ...formData, logo: url })}
+                onRemove={() => setFormData({ ...formData, logo: '' })}
+                label="Brand Logo"
               />
+              <div className="space-y-2">
+                <Label htmlFor="edit-website">Website URL</Label>
+                <Input
+                  id="edit-website"
+                  type="url"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  placeholder="https://example.com"
+                />
+              </div>
               <div className="flex items-center space-x-2">
                 <Switch
                   id="edit-isActive"
@@ -337,22 +343,12 @@ export default function AdminCategories() {
                 />
                 <Label htmlFor="edit-isActive">Active</Label>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-sortOrder">Sort Order</Label>
-                <Input
-                  id="edit-sortOrder"
-                  type="number"
-                  value={formData.sortOrder}
-                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsEditOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleEdit}>Update Category</Button>
+              <Button onClick={handleEdit}>Update Brand</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -361,50 +357,59 @@ export default function AdminCategories() {
         <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Category Details</DialogTitle>
+              <DialogTitle>Brand Details</DialogTitle>
               <DialogDescription>
-                View category information.
+                View brand information.
               </DialogDescription>
             </DialogHeader>
-            {selectedCategory && (
+            {selectedBrand && (
               <div className="space-y-4">
-                {selectedCategory.image && (
+                {selectedBrand.logo && (
                   <div>
-                    <Label>Image</Label>
+                    <Label>Logo</Label>
                     <img
-                      src={selectedCategory.image}
-                      alt={selectedCategory.name}
-                      className="w-full h-48 object-cover rounded-md mt-2"
+                      src={selectedBrand.logo}
+                      alt={selectedBrand.name}
+                      className="w-32 h-32 object-cover rounded-md mt-2"
                     />
                   </div>
                 )}
                 <div>
                   <Label>Name</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.name}</p>
+                  <p className="mt-1 text-sm">{selectedBrand.name}</p>
                 </div>
                 <div>
                   <Label>Description</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.description}</p>
+                  <p className="mt-1 text-sm">{selectedBrand.description}</p>
                 </div>
+                {selectedBrand.website && (
+                  <div>
+                    <Label>Website</Label>
+                    <a
+                      href={selectedBrand.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 text-sm text-primary hover:underline block"
+                    >
+                      {selectedBrand.website}
+                    </a>
+                  </div>
+                )}
                 <div>
                   <Label>Status</Label>
                   <div className="mt-1">
-                    <Badge variant={selectedCategory.isActive ? "default" : "secondary"}>
-                      {selectedCategory.isActive ? "Active" : "Inactive"}
+                    <Badge variant={selectedBrand.isActive ? "default" : "secondary"}>
+                      {selectedBrand.isActive ? "Active" : "Inactive"}
                     </Badge>
                   </div>
                 </div>
                 <div>
-                  <Label>Sort Order</Label>
-                  <p className="mt-1 text-sm">{selectedCategory.sortOrder}</p>
-                </div>
-                <div>
                   <Label>Created At</Label>
-                  <p className="mt-1 text-sm">{new Date(selectedCategory.createdAt).toLocaleString()}</p>
+                  <p className="mt-1 text-sm">{new Date(selectedBrand.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
                   <Label>Updated At</Label>
-                  <p className="mt-1 text-sm">{new Date(selectedCategory.updatedAt).toLocaleString()}</p>
+                  <p className="mt-1 text-sm">{new Date(selectedBrand.updatedAt).toLocaleString()}</p>
                 </div>
               </div>
             )}

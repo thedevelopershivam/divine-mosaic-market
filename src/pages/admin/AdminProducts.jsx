@@ -12,10 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Edit, Trash2, Image, DollarSign } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
 import { FileUpload } from "@/components/admin/FileUpload"
-import { AdminProduct } from "@/types/admin"
-
 export default function AdminProducts() {
-  const [products, setProducts] = useState<AdminProduct[]>([
+  const [products, setProducts] = useState([
     {
       id: "1",
       name: "Clear Quartz Crystal Point",
@@ -49,7 +47,7 @@ export default function AdminProducts() {
   ])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null)
+  const [editingProduct, setEditingProduct] = useState(null)
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -57,12 +55,12 @@ export default function AdminProducts() {
     sku: "",
     price: 0,
     salePrice: 0,
-    images: [] as string[],
+    images: [],
     categoryId: "",
     subCategoryId: "",
     brandId: "",
-    tags: [] as string[],
-    attributes: {} as Record<string, any>,
+    tags: [],
+    attributes: {},
     stock: 0,
     minStock: 0,
     weight: 0,
@@ -71,11 +69,11 @@ export default function AdminProducts() {
       width: 0,
       height: 0
     },
-    status: "active" as AdminProduct["status"],
+    status: "active",
     isFeatured: false
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     
     if (editingProduct) {
@@ -85,7 +83,7 @@ export default function AdminProducts() {
           : product
       ))
     } else {
-      const newProduct: AdminProduct = {
+      const newProduct = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
         createdAt: new Date().toISOString(),
@@ -122,7 +120,7 @@ export default function AdminProducts() {
     setIsDialogOpen(false)
   }
 
-  const handleEdit = (product: AdminProduct) => {
+  const handleEdit = (product) => {
     setEditingProduct(product)
     setFormData({
       name: product.name,
@@ -147,18 +145,18 @@ export default function AdminProducts() {
     setIsDialogOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     setProducts(products.filter(product => product.id !== id))
   }
 
-  const addImage = (url: string) => {
+  const addImage = (url) => {
     setFormData(prev => ({
       ...prev,
       images: [...prev.images, url]
     }))
   }
 
-  const removeImage = (index: number) => {
+  const removeImage = (index) => {
     setFormData(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
@@ -281,7 +279,7 @@ export default function AdminProducts() {
                       <Label htmlFor="status">Status</Label>
                       <Select 
                         value={formData.status} 
-                        onValueChange={(value: AdminProduct["status"]) => setFormData(prev => ({ ...prev, status: value }))}
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
                       >
                         <SelectTrigger>
                           <SelectValue />

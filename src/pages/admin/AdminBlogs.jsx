@@ -11,10 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
 import { FileUpload } from "@/components/admin/FileUpload"
-import { Blog } from "@/types/admin"
-
 export default function AdminBlogs() {
-  const [blogs, setBlogs] = useState<Blog[]>([
+  const [blogs, setBlogs] = useState([
     {
       id: "1",
       title: "The Power of Crystal Healing",
@@ -32,20 +30,20 @@ export default function AdminBlogs() {
   ])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingBlog, setEditingBlog] = useState<Blog | null>(null)
+  const [editingBlog, setEditingBlog] = useState(null)
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     excerpt: "",
     image: "",
     slug: "",
-    status: "draft" as Blog["status"],
+    status: "draft",
     categoryId: "",
-    tags: [] as string[]
+    tags: []
   })
   const [newTag, setNewTag] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     
     if (editingBlog) {
@@ -60,7 +58,7 @@ export default function AdminBlogs() {
           : blog
       ))
     } else {
-      const newBlog: Blog = {
+      const newBlog = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
         authorId: "admin",
@@ -90,7 +88,7 @@ export default function AdminBlogs() {
     setIsDialogOpen(false)
   }
 
-  const handleEdit = (blog: Blog) => {
+  const handleEdit = (blog) => {
     setEditingBlog(blog)
     setFormData({
       title: blog.title,
@@ -105,11 +103,11 @@ export default function AdminBlogs() {
     setIsDialogOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     setBlogs(blogs.filter(blog => blog.id !== id))
   }
 
-  const generateSlug = (title: string) => {
+  const generateSlug = (title) => {
     return title
       .toLowerCase()
       .replace(/[^a-z0-9 -]/g, '')
@@ -128,7 +126,7 @@ export default function AdminBlogs() {
     }
   }
 
-  const removeTag = (tag: string) => {
+  const removeTag = (tag) => {
     setFormData(prev => ({
       ...prev,
       tags: prev.tags.filter(t => t !== tag)
@@ -212,7 +210,7 @@ export default function AdminBlogs() {
                   <Label htmlFor="status">Status</Label>
                   <Select 
                     value={formData.status} 
-                    onValueChange={(value: Blog["status"]) => setFormData(prev => ({ ...prev, status: value }))}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />

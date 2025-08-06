@@ -10,10 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
 import { FileUpload } from "@/components/admin/FileUpload"
-import { Language } from "@/types/admin"
-
 export default function AdminLanguages() {
-  const [languages, setLanguages] = useState<Language[]>([
+  const [languages, setLanguages] = useState([
     {
       id: "1",
       name: "English",
@@ -37,7 +35,7 @@ export default function AdminLanguages() {
   ])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingLanguage, setEditingLanguage] = useState<Language | null>(null)
+  const [editingLanguage, setEditingLanguage] = useState(null)
   const [formData, setFormData] = useState({
     name: "",
     code: "",
@@ -46,7 +44,7 @@ export default function AdminLanguages() {
     isActive: true
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     
     if (editingLanguage) {
@@ -56,7 +54,7 @@ export default function AdminLanguages() {
           : lang
       ))
     } else {
-      const newLanguage: Language = {
+      const newLanguage = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
         createdAt: new Date().toISOString(),
@@ -80,7 +78,7 @@ export default function AdminLanguages() {
     setIsDialogOpen(false)
   }
 
-  const handleEdit = (language: Language) => {
+  const handleEdit = (language) => {
     setEditingLanguage(language)
     setFormData({
       name: language.name,
@@ -92,11 +90,11 @@ export default function AdminLanguages() {
     setIsDialogOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     setLanguages(languages.filter(lang => lang.id !== id))
   }
 
-  const handleSetDefault = (id: string) => {
+  const handleSetDefault = (id) => {
     setLanguages(languages.map(lang => ({
       ...lang,
       isDefault: lang.id === id

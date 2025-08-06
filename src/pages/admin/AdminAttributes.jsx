@@ -10,10 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2, X } from "lucide-react"
 import { AdminLayout } from "@/components/admin/AdminLayout"
-import { Attribute } from "@/types/admin"
-
 export default function AdminAttributes() {
-  const [attributes, setAttributes] = useState<Attribute[]>([
+  const [attributes, setAttributes] = useState([
     {
       id: "1",
       name: "Material",
@@ -38,18 +36,18 @@ export default function AdminAttributes() {
   ])
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingAttribute, setEditingAttribute] = useState<Attribute | null>(null)
+  const [editingAttribute, setEditingAttribute] = useState(null)
   const [formData, setFormData] = useState({
     name: "",
-    type: "text" as Attribute["type"],
-    values: [] as string[],
+    type: "text",
+    values: [],
     isRequired: false,
     isFilterable: false,
     sortOrder: 1
   })
   const [newValue, setNewValue] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     
     if (editingAttribute) {
@@ -59,7 +57,7 @@ export default function AdminAttributes() {
           : attr
       ))
     } else {
-      const newAttribute: Attribute = {
+      const newAttribute = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
         values: formData.type === "select" ? formData.values : undefined,
@@ -86,7 +84,7 @@ export default function AdminAttributes() {
     setIsDialogOpen(false)
   }
 
-  const handleEdit = (attribute: Attribute) => {
+  const handleEdit = (attribute) => {
     setEditingAttribute(attribute)
     setFormData({
       name: attribute.name,
@@ -99,7 +97,7 @@ export default function AdminAttributes() {
     setIsDialogOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     setAttributes(attributes.filter(attr => attr.id !== id))
   }
 
@@ -113,7 +111,7 @@ export default function AdminAttributes() {
     }
   }
 
-  const removeValue = (index: number) => {
+  const removeValue = (index) => {
     setFormData(prev => ({
       ...prev,
       values: prev.values.filter((_, i) => i !== index)
@@ -151,7 +149,7 @@ export default function AdminAttributes() {
                   <Label htmlFor="type">Type</Label>
                   <Select 
                     value={formData.type} 
-                    onValueChange={(value: Attribute["type"]) => setFormData(prev => ({ ...prev, type: value }))}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue />
