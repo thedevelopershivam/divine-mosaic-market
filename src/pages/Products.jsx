@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/select"
 
 const Products = () => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState('grid')
   const [priceRange, setPriceRange] = useState([0, 1000])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState([])
   const [sortBy, setSortBy] = useState('newest')
 
   const products = [
@@ -111,7 +111,7 @@ const Products = () => {
     'Yoga & Wellness'
   ]
 
-  const toggleCategory = (category: string) => {
+  const toggleCategory = (category) => {
     setSelectedCategories(prev => 
       prev.includes(category) 
         ? prev.filter(c => c !== category)

@@ -49,7 +49,7 @@ const Wishlist = () => {
     }
   ])
 
-  const removeFromWishlist = (itemId: number) => {
+  const removeFromWishlist = (itemId) => {
     setWishlistItems(prev => prev.filter(item => item.id !== itemId))
     toast({
       title: "Removed from wishlist",
@@ -57,7 +57,7 @@ const Wishlist = () => {
     })
   }
 
-  const addToCart = (item: any) => {
+  const addToCart = (item) => {
     toast({
       title: "Added to cart",
       description: `${item.name} has been added to your cart.`,

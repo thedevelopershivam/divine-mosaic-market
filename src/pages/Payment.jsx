@@ -40,7 +40,7 @@ const Payment = () => {
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsProcessing(true)
     
